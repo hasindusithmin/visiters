@@ -2,8 +2,9 @@
 from fastapi import FastAPI,HTTPException
 from database import create_db_and_tables,engine
 from models import Visiter
-from typing import List
+from typing import List,Optional
 from sqlmodel import Session,select
+from pydantic import BaseModel
 
 # Create instance -> FastAPI
 app = FastAPI()
@@ -37,4 +38,32 @@ async def read_one_visiter(id:int):
         if not exist:
             raise HTTPException(status_code=404)
         return visitor
+
+class VisiteR(BaseModel):
+    ipv6:Optional[str] = None
+    chrome:Optional[str]  = None
+    port_number:Optional[int] = None
+    mac_address:Optional[str] = None
+    timezone:Optional[str] = None
+    action:Optional[str] = None
+
+# Update By Id 
+@app.put("/{id}",status_code=200,response_model=Visiter)
+async def update_visior(id:int,visiter:VisiteR):
+    with Session(engine) as session:
+        visiterInDb = session.get(Visiter, id)
+        exist = True if visiterInDb != None else False
+        if not exist:
+            raise HTTPException(status_code=404)
+        visiter = visiter.dict()
+        for k,v in visiter.items():
+            if v is None:
+                continue
+            exec(f'visiterInDb.{k} = "{v}"')
+        session.add(visiterInDb)
+        session.commit()
+        session.refresh(visiterInDb)
+        return visiterInDb
+    
+        
 
