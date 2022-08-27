@@ -27,3 +27,9 @@ async def create_visiter(visiter:Visiter):
 async def read_visiter():
     with Session(engine) as session:
         return session.exec(select(Visiter)).all()
+
+# Read by Id 
+@app.get('/{id}',status_code=200,response_model=Visiter)
+async def read_one_visiter(id:int):
+    with Session(engine) as session:
+        return session.get(Visiter, id)

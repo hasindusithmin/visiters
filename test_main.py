@@ -67,3 +67,24 @@ def test_read_visiter():
         assert db_obj.mac_address == res_obj.mac_address
         assert db_obj.port_number == res_obj.port_number
         assert db_obj.timezone == res_obj.timezone
+
+def test_read_one_visiter():
+    id = 2
+    res = client.get(f'/{id}')
+    data = res.json()
+
+    # Check status code 
+    assert res.status_code == 200
+
+    # Check data 
+    db_obj = {}
+    with Session(engine) as session:
+        db_obj = session.get(Visiter,id)
+    res_obj = Visiter(**data)
+    assert db_obj.id == res_obj.id
+    assert db_obj.ipv6 == res_obj.ipv6
+    assert db_obj.action == res_obj.action
+    assert db_obj.chrome == res_obj.chrome
+    assert db_obj.mac_address == res_obj.mac_address
+    assert db_obj.port_number == res_obj.port_number
+    assert db_obj.timezone == res_obj.timezone
