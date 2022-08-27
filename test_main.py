@@ -88,3 +88,11 @@ def test_read_one_visiter():
     assert db_obj.mac_address == res_obj.mac_address
     assert db_obj.port_number == res_obj.port_number
     assert db_obj.timezone == res_obj.timezone
+
+def test_read_one_visiter_not_exist():
+    id = 50
+    res = client.get(f'/{id}')
+    data = res.json()
+
+    # Check status code 
+    assert res.status_code == 404

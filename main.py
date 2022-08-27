@@ -32,4 +32,9 @@ async def read_visiter():
 @app.get('/{id}',status_code=200,response_model=Visiter)
 async def read_one_visiter(id:int):
     with Session(engine) as session:
-        return session.get(Visiter, id)
+        visitor = session.get(Visiter, id)
+        exist = True if visitor != None else False
+        if not exist:
+            raise HTTPException(status_code=404)
+        return visitor
+
