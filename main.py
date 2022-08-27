@@ -15,9 +15,15 @@ def on_startup():
 
 # Create Visiter
 @app.post("/",status_code=201,response_model=Visiter)
-def create_visiter(visiter:Visiter):
+async def create_visiter(visiter:Visiter):
     with Session(engine) as session:
         session.add(visiter)
         session.commit()
         session.refresh(visiter)
         return visiter
+
+# Read Visiter
+@app.get('/',response_model=List[Visiter],status_code=200)
+async def read_visiter():
+    with Session(engine) as session:
+        return session.exec(select(Visiter)).all()

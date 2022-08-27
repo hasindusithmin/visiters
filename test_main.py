@@ -2,8 +2,10 @@
 from fastapi.testclient import TestClient
 from main import app
 from faker import Faker
-
-
+from typing import List
+from models import Visiter
+from sqlmodel import Session,select
+from database import create_db_and_tables,engine
 
 fake = Faker()
 client = TestClient(app)
@@ -29,7 +31,7 @@ def test_create_visiter():
             continue
         assert data[k] == body[k]
 
-def test_create_visiter_with_invalid_data():
+def test_create_visiter_with_invalid_body():
     body = {
         'ipv6':fake.ipv6(),
         'chrome':fake.chrome(),
@@ -42,3 +44,26 @@ def test_create_visiter_with_invalid_data():
 
     assert response.status_code == 422
 
+
+def test_read_visiter():
+    response = client.get('/')
+    data = response.json()
+    # Check status code 
+    assert response.status_code == 200
+
+    # Check body 
+    create_db_and_tables()
+    db = []
+    with Session(engine) as session:
+        db = session.exec(select(Visiter)).all()
+    assert len(db) == len(data)
+    for i in range(len(db)):
+        db_obj = db[i]
+        res_obj = Visiter(**data[i])
+        assert db_obj.id == res_obj.id
+        assert db_obj.ipv6 == res_obj.ipv6
+        assert db_obj.action == res_obj.action
+        assert db_obj.chrome == res_obj.chrome
+        assert db_obj.mac_address == res_obj.mac_address
+        assert db_obj.port_number == res_obj.port_number
+        assert db_obj.timezone == res_obj.timezone
