@@ -12,11 +12,12 @@ app = FastAPI()
 def on_startup():
     create_db_and_tables()
 
+
 # Create Visiter
-@app.post("/",response_class=List[Visiter],status_code=200)
-async def create_visiter(visiter:Visiter):
-    try:
-        with Session(bind=engine) as session:
-            return session.exec(select(visiter)).all()
-    except:
-        raise HTTPException(status_code=400)
+@app.post("/",status_code=201,response_model=Visiter)
+def create_visiter(visiter:Visiter):
+    with Session(engine) as session:
+        session.add(visiter)
+        session.commit()
+        session.refresh(visiter)
+        return visiter
