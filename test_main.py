@@ -69,7 +69,7 @@ def test_read_visiter():
         assert db_obj.timezone == res_obj.timezone
 
 def test_read_one_visiter():
-    id = 2
+    id = 1
     res = client.get(f'/{id}')
     data = res.json()
 
@@ -98,7 +98,7 @@ def test_read_one_visiter_not_exist():
     assert res.status_code == 404
 
 def test_update_visior():
-    id = 2
+    id = 1
     res_body = {
         'ipv6':fake.ipv6(),
         'chrome':fake.chrome(),
@@ -138,7 +138,7 @@ def test_update_visior_invalid_body():
     assert res.status_code == 422
 
 def test_delete_visitor():
-    id = 2
+    id = 9
     res = client.delete(url=f'/{id}')
     assert res.status_code == 202
     with Session(engine) as session:
