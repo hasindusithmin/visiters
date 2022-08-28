@@ -5,6 +5,7 @@ from models import Visiter
 from typing import List,Optional
 from sqlmodel import Session,select
 from pydantic import BaseModel
+import uvicorn
 
 # Create instance -> FastAPI
 app = FastAPI()
@@ -81,3 +82,5 @@ async def delete_visitor(id:int,tags=['Delete A Visitor']):
         session.commit()
         raise HTTPException(status_code=202)
 
+if __name__ == "__main__":
+    uvicorn.run(app,host="0.0.0.0",port=8000)
