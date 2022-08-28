@@ -48,21 +48,27 @@ class VisiteR(BaseModel):
     action:Optional[str] = None
 
 # Update By Id 
-@app.put("/{id}",status_code=200,response_model=Visiter)
+@app.put("/{id}",status_code=202,response_model=Visiter)
 async def update_visior(id:int,visiter:VisiteR):
     with Session(engine) as session:
+        # Get data from DB 
         visiterInDb = session.get(Visiter, id)
+        # Check If data exist or not 
         exist = True if visiterInDb != None else False
         if not exist:
             raise HTTPException(status_code=404)
+        # Instance -> Dict 
         visiter = visiter.dict()
+        # Update visiterInDb instance 
         for k,v in visiter.items():
             if v is None:
                 continue
             exec(f'visiterInDb.{k} = "{v}"')
+        # DB operations 
         session.add(visiterInDb)
         session.commit()
         session.refresh(visiterInDb)
+
         return visiterInDb
     
         

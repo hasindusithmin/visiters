@@ -96,3 +96,43 @@ def test_read_one_visiter_not_exist():
 
     # Check status code 
     assert res.status_code == 404
+
+def test_update_visior():
+    id = 2
+    res_body = {
+        'ipv6':fake.ipv6(),
+        'chrome':fake.chrome(),
+    }
+    res = client.put(url=f"/{id}",json=res_body)
+    data = res.json()
+    # Check Status Code 
+    assert res.status_code == 202
+    # Check Response Body 
+    with Session(engine) as session:
+        visitorInDb = session.get(Visiter,id)
+        visitorInDbDict = visitorInDb.__dict__
+        for k in data.keys():
+            if k in ['ipv6', 'mac_address', 'chrome', 'action', 'port_number', 'id', 'timezone']:
+                assert data[k] == visitorInDbDict[k]
+
+def test_update_visior_not_exist():
+    id = 20
+    res_body = {
+        'ipv6':fake.ipv6(),
+        'chrome':fake.chrome(),
+    }
+    res = client.put(url=f"/{id}",json=res_body)
+    data = res.json()
+    # Check Status Code 
+    assert res.status_code == 404
+
+def test_update_visior_invalid_body():
+    id = 20
+    res_body = {
+        'ipv6':fake.ipv6(),
+        'port_number':"Text",
+    }
+    res = client.put(url=f"/{id}",json=res_body)
+    data = res.json()
+    # Check Status Code 
+    assert res.status_code == 422
