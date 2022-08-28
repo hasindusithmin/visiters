@@ -4,3 +4,4 @@ Faker
 pytest
 requests
 uvicorn
+sqlmodel

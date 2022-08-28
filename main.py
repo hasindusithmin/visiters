@@ -7,8 +7,26 @@ from sqlmodel import Session,select
 from pydantic import BaseModel
 import uvicorn
 
+description = """
+### VisitorAPP
+
+![visitor](https://i.ibb.co/dpqRH0p/visitor.jpg)
+
+#### _the simple crud_
+
+"""
+
+
 # Create instance -> FastAPI
-app = FastAPI()
+app = FastAPI(
+    title="VisitorAPP",
+    description=description,
+    contact={
+        "name": "Hasindu Sithmin",
+        "url": "https://hasindusithmin.github.io/",
+        "email": "hasindusithmin64@gmail.com",
+    }
+)
 
 @app.on_event("startup")
 def on_startup():
