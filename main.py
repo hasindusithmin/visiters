@@ -71,5 +71,13 @@ async def update_visior(id:int,visiter:VisiteR):
 
         return visiterInDb
     
-        
+@app.delete("/{id}")
+async def delete_visitor(id:int):
+    with Session(engine) as session:
+        visitorInDb = session.get(Visiter,id)
+        if visitorInDb is None:
+            raise HTTPException(status_code=404)
+        session.delete(visitorInDb)
+        session.commit()
+        raise HTTPException(status_code=202)
 

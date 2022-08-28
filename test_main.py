@@ -136,3 +136,16 @@ def test_update_visior_invalid_body():
     data = res.json()
     # Check Status Code 
     assert res.status_code == 422
+
+def test_delete_visitor():
+    id = 2
+    res = client.delete(url=f'/{id}')
+    assert res.status_code == 202
+    with Session(engine) as session:
+        visiterInDb =  session.get(Visiter,id)
+        assert visiterInDb is None
+
+def test_delete_visitor_not_exist():
+    id = 5
+    res = client.delete(url=f'/{id}')
+    assert res.status_code == 404
