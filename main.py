@@ -15,7 +15,7 @@ def on_startup():
 
 
 # Create Visiter
-@app.post("/",status_code=201,response_model=Visiter)
+@app.post("/",status_code=201,response_model=Visiter,tags=['Create A Visitor'])
 async def create_visiter(visiter:Visiter):
     with Session(engine) as session:
         session.add(visiter)
@@ -24,13 +24,13 @@ async def create_visiter(visiter:Visiter):
         return visiter
 
 # Read Visiter
-@app.get('/',response_model=List[Visiter],status_code=200)
+@app.get('/',response_model=List[Visiter],status_code=200,tags=['Read All Visitors'])
 async def read_visiter():
     with Session(engine) as session:
         return session.exec(select(Visiter)).all()
 
 # Read by Id 
-@app.get('/{id}',status_code=200,response_model=Visiter)
+@app.get('/{id}',status_code=200,response_model=Visiter,tags=['Read Single Visitor'])
 async def read_one_visiter(id:int):
     with Session(engine) as session:
         visitor = session.get(Visiter, id)
@@ -48,7 +48,7 @@ class VisiteR(BaseModel):
     action:Optional[str] = None
 
 # Update By Id 
-@app.put("/{id}",status_code=202,response_model=Visiter)
+@app.put("/{id}",status_code=202,response_model=Visiter,tags=['Update A Visitor'])
 async def update_visior(id:int,visiter:VisiteR):
     with Session(engine) as session:
         # Get data from DB 
@@ -72,7 +72,7 @@ async def update_visior(id:int,visiter:VisiteR):
         return visiterInDb
     
 @app.delete("/{id}")
-async def delete_visitor(id:int):
+async def delete_visitor(id:int,tags=['Delete A Visitor']):
     with Session(engine) as session:
         visitorInDb = session.get(Visiter,id)
         if visitorInDb is None:
